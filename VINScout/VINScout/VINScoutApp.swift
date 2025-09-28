@@ -11,7 +11,7 @@ import SwiftUI
 struct VINScoutApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            VINLookupView()
         }
     }
 }
