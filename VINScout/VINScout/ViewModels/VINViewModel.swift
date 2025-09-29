@@ -30,6 +30,14 @@ public class VINViewModel: ObservableObject {
         errorMessage = nil
         vehicle = nil
         
+        do {
+            try VINValidator.validate(vin: vinText)
+        } catch {
+            self.errorMessage = (error as? LocalizedError)?.errorDescription ?? "Invalid VIN Format"
+            self.isLoading = false
+            return
+        }
+        
         Task {
             do {
                 let fetchedVehicle = try await apiService.fetchVehicleInfo(for: vinText)
