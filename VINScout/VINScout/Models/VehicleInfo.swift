@@ -8,7 +8,10 @@
 import Foundation
 
 struct VehicleInfo: Codable, Identifiable {
-    let id : String
+    
+    var id: String { vin }
+    
+    let vin: String
     let year: String
     let make: String
     let model: String
