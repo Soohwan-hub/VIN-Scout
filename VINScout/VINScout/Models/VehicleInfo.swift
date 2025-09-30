@@ -19,4 +19,10 @@ struct VehicleInfo: Codable, Identifiable {
     let bodyType: String?
     let driveType: String?
     let engineInfo: String?
+    
+    //test for dropdown feature
+    let fuelTypePrimary: String?
+    let engineCylinders: String?
+    let displacementL: String?
+    let transmissionStyle: String?
 }

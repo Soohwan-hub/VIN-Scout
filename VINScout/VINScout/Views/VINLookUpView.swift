@@ -53,7 +53,21 @@ struct VINLookupView: View {
                         if viewModel.vinText.count > 17 {
                             viewModel.vinText = String(viewModel.vinText.prefix(17))
                         }
+                }
+                
+                Button(action: {
+                    // Access the pasteboard and set the text
+                    if var pastedText = UIPasteboard.general.string {
+                        viewModel.vinText = pastedText
+                        let sanitizedVIN = pastedText.filter { $0.isLetter || $0.isNumber }.uppercased()
+                                
+                        // 3. Assign the clean VIN to your view model
+                        viewModel.vinText = sanitizedVIN
                     }
+                })  {
+                        Image(systemName: "doc.on.clipboard")
+                    }
+                    .padding(.trailing, 8)
                 
                 // Show a clear button only when the text field is not empty
                 if !viewModel.vinText.isEmpty {
@@ -134,7 +148,7 @@ struct VINLookupView: View {
     }
 
     private func errorView(message: String) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.red)
             Text(message)
@@ -150,7 +164,10 @@ struct VINLookupView: View {
 
 struct VehicleDetailCard: View {
     let vehicle: VehicleInfo
-
+    
+    //test
+    @State private var showMoreDetails = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading) {
@@ -171,6 +188,25 @@ struct VehicleDetailCard: View {
                 InfoRow(label: "Drive Type", value: vehicle.driveType)
                 InfoRow(label: "Engine", value: vehicle.engineInfo)
             }
+            
+            if showMoreDetails {
+                Divider()
+                VStack(spacing: 8) {
+                    InfoRow(label: "Fuel Type", value: vehicle.fuelTypePrimary)
+                    InfoRow(label: "Cylinders", value: vehicle.engineCylinders)
+                    InfoRow(label: "Displacement", value: vehicle.displacementL.map { "\($0) L" })
+                    InfoRow(label: "Transmission", value: vehicle.transmissionStyle)
+                }
+            }
+            HStack {
+                Spacer()
+                Button(action: { showMoreDetails.toggle() }) {
+                    Text(showMoreDetails ? "Show Less" : "Show More")
+                        .font(.footnote.weight(.semibold))
+                    Image(systemName: showMoreDetails ? "chevron.up" : "chevron.down").font(.footnote)
+                }
+            }
+            
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -180,6 +216,7 @@ struct VehicleDetailCard: View {
              RoundedRectangle(cornerRadius: 15)
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         )
+        .animation(.spring, value: showMoreDetails)
         .transition(.opacity)
         .animation(.easeIn, value: vehicle.id)
     }

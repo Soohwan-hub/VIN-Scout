@@ -58,7 +58,13 @@ class VINAPIService: VINAPIServiceProtocol {
                 trim: detailsDictionary["Trim"],
                 bodyType: detailsDictionary["Body Class"],
                 driveType: detailsDictionary["Drive Type"],
-                engineInfo: detailsDictionary["Engine Model"]
+                engineInfo: detailsDictionary["Engine Model"],
+                
+                //test for dropdown feature
+                fuelTypePrimary: detailsDictionary["Fuel Type - Primary"],
+                engineCylinders: detailsDictionary["Engine Cylinders"],
+                displacementL: detailsDictionary["Displacement (L)"],
+                transmissionStyle: detailsDictionary["Transmission Style"]
             )
             
         } catch {
