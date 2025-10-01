@@ -12,6 +12,7 @@
 		E53062792E8A171E0078F5CB /* HIstoryServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53062782E8A171E0078F5CB /* HIstoryServices.swift */; };
 		E530627B2E8A172D0078F5CB /* VINAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E530627A2E8A172D0078F5CB /* VINAPIService.swift */; };
 		E57535DB2E8B09F400750F44 /* VINValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57535DA2E8B09F400750F44 /* VINValidation.swift */; };
+		E576D9872E8CA15C0085CF05 /* MockVINAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E576D9862E8CA15C0085CF05 /* MockVINAPIService.swift */; };
 		E593C9DE2E89C895003DAE96 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E593C9D82E89C895003DAE96 /* Preview Assets.xcassets */; };
 		E593C9DF2E89C895003DAE96 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E593C9DA2E89C895003DAE96 /* Assets.xcassets */; };
 		E593C9E02E89C895003DAE96 /* VINLookUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E593C9DB2E89C895003DAE96 /* VINLookUpView.swift */; };
@@ -44,6 +45,7 @@
 		E53062782E8A171E0078F5CB /* HIstoryServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIstoryServices.swift; sourceTree = "<group>"; };
 		E530627A2E8A172D0078F5CB /* VINAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VINAPIService.swift; sourceTree = "<group>"; };
 		E57535DA2E8B09F400750F44 /* VINValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VINValidation.swift; sourceTree = "<group>"; };
+		E576D9862E8CA15C0085CF05 /* MockVINAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVINAPIService.swift; sourceTree = "<group>"; };
 		E593C9AB2E89C88F003DAE96 /* VINScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VINScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E593C9BB2E89C890003DAE96 /* VINScoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VINScoutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E593C9C52E89C890003DAE96 /* VINScoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VINScoutUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -173,6 +175,7 @@
 			children = (
 				E530627A2E8A172D0078F5CB /* VINAPIService.swift */,
 				E53062782E8A171E0078F5CB /* HIstoryServices.swift */,
+				E576D9862E8CA15C0085CF05 /* MockVINAPIService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				E53062752E8A16F40078F5CB /* VehicleInfo.swift in Sources */,
 				E57535DB2E8B09F400750F44 /* VINValidation.swift in Sources */,
 				E593C9E02E89C895003DAE96 /* VINLookUpView.swift in Sources */,
+				E576D9872E8CA15C0085CF05 /* MockVINAPIService.swift in Sources */,
 				E53062772E8A17110078F5CB /* VINViewModel.swift in Sources */,
 				E593C9E12E89C895003DAE96 /* VINScoutApp.swift in Sources */,
 				E530627B2E8A172D0078F5CB /* VINAPIService.swift in Sources */,

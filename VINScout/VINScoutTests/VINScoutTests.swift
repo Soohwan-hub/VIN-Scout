@@ -8,7 +8,10 @@
 import XCTest
 @testable import VINScout
 
+@MainActor
 final class VINScoutTests: XCTestCase {
+    var viewModel: VINViewModel!
+    var mockAPIService: MockVINAPIService!
     
     func test_validVIN_shouldPassValidation() {
         // A known valid VIN for a 2019 Audi A4
@@ -42,13 +45,129 @@ final class VINScoutTests: XCTestCase {
      }
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        mockAPIService = MockVINAPIService()
+        // NOTE: This requires your VINViewModel to have an initializer that accepts an apiService
+        // for dependency injection. Example: init(apiService: VINAPIServiceProtocol = VINAPIService())
+        viewModel = VINViewModel(apiService: mockAPIService)
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewModel = nil
+        mockAPIService = nil
+        try super.tearDownWithError()
+    }
+    
+    @MainActor
+    func testLookupVIN_Success() async {
+        let mockVehicle = VehicleInfo(
+            vin: "123",
+            year: "2025",
+            make: "TestMake",
+            model: "TestModel",
+            trim: nil,
+            bodyType: nil,
+            driveType: nil,
+            engineInfo: nil,
+            fuelTypePrimary: nil,
+            engineCylinders: nil,
+            displacementL: nil,
+            transmissionStyle: nil
+        )
+        mockAPIService.result = .success(mockVehicle)
+        viewModel.vinText = "123456789ABCDEFGH"
+        
+        // Act
+        await viewModel.lookupVIN()
+        
+        // Assert
+        XCTAssertNotNil(viewModel.vehicle)
+        XCTAssertEqual(viewModel.vehicle?.make, "TestMake")
+        XCTAssertNil(viewModel.errorMessage)
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertTrue(viewModel.history.contains(where: { $0.vin == "123" }))
     }
 
+    @MainActor
+    func testLookupVIN_Failure() async {
+        // Arrange
+        mockAPIService.result = .failure(VINScout.VINError.badURL)
+        viewModel.vinText = "INVALIDVIN"
+        
+        await viewModel.lookupVIN()
+        
+        // Assert
+        XCTAssertNil(viewModel.vehicle)
+        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertFalse(viewModel.isLoading)
+    }
+    @MainActor
+    func testClearResults() {
+        viewModel.vehicle = VehicleInfo(
+            vin: "123",
+            year: "2025",
+            make: "TestMake",
+            model: "TestModel",
+            trim: nil,
+            bodyType: nil,
+            driveType: nil,
+            engineInfo: nil,
+            fuelTypePrimary: nil,
+            engineCylinders: nil,
+            displacementL: nil,
+            transmissionStyle: nil
+        )
+        viewModel.errorMessage = "An old error"
+        
+        // Act
+        viewModel.clearResults()
+        
+        // Assert
+        XCTAssertNil(viewModel.vehicle)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testDeleteHistoryItem() {
+        let vehicle1 = VehicleInfo(
+            vin: "VIN1",
+            year: "2020",
+            make: "MakeA",
+            model: "ModelA",
+            trim: nil,
+            bodyType: nil,
+            driveType: nil,
+            engineInfo: nil,
+            fuelTypePrimary: nil,
+            engineCylinders: nil,
+            displacementL: nil,
+            transmissionStyle: nil
+        )
+        let vehicle2 = VehicleInfo(
+            vin: "VIN2",
+            year: "2021",
+            make: "MakeB",
+            model: "ModelB",
+            trim: nil,
+            bodyType: nil,
+            driveType: nil,
+            engineInfo: nil,
+            fuelTypePrimary: nil,
+            engineCylinders: nil,
+            displacementL: nil,
+            transmissionStyle: nil
+        )
+        viewModel.history = [vehicle1, vehicle2]
+        
+        // Act
+        viewModel.deleteHistoryItem(vehicle: vehicle1)
+        
+        // Assert
+        XCTAssertEqual(viewModel.history.count, 1)
+        XCTAssertFalse(viewModel.history.contains(where: { $0.vin == "VIN1" }))
+        XCTAssertTrue(viewModel.history.contains(where: { $0.vin == "VIN2" }))
+    }
+    
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.

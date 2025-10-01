@@ -14,6 +14,7 @@ public class VINViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var history: [VehicleInfo] = []
+    @Published var isShowingHistoryVehicle: Bool = false
     // properties the view will use
     
     private let apiService: VINAPIServiceProtocol
@@ -25,7 +26,19 @@ public class VINViewModel: ObservableObject {
     }
     
     //public methods
-    func lookupVIN() {
+    func clearResults() {
+        vehicle = nil
+        errorMessage = nil
+        isShowingHistoryVehicle = false
+    }
+    func deleteHistoryItem(vehicle: VehicleInfo) {
+        history.removeAll { $0.id == vehicle.id }
+        // Save the entire, updated array back to the service
+        historyService.save(history: self.history)
+        
+    }
+    func lookupVIN() async{
+        isShowingHistoryVehicle = false
         isLoading = true
         errorMessage = nil
         vehicle = nil
@@ -38,17 +51,21 @@ public class VINViewModel: ObservableObject {
             return
         }
         
-        Task {
-            do {
-                let fetchedVehicle = try await apiService.fetchVehicleInfo(for: vinText)
-                self.vehicle = fetchedVehicle
+        do {
+            let fetchedVehicle = try await apiService.fetchVehicleInfo(for: vinText)
+            self.vehicle = fetchedVehicle
                 
-                historyService.save(vehicle: fetchedVehicle)
-                self.history = historyService.load()
-            } catch {
-                self.errorMessage = "Failed to fetch vehicle info \(error.localizedDescription)"
-            }
-            self.isLoading = false
+            historyService.save(vehicle: fetchedVehicle)
+            self.history = historyService.load()
+        } catch {
+            self.errorMessage = "Failed to fetch vehicle info \(error.localizedDescription)"
         }
+        self.isLoading = false
+    }
+    func showHistoryVehicle(_ vehicleToShow: VehicleInfo) {
+        self.vehicle = vehicleToShow
+        self.vinText = vehicleToShow.vin
+        self.isShowingHistoryVehicle = true
+        self.errorMessage = nil
     }
 }

@@ -14,25 +14,22 @@ class HistoryService {
         let decoder = JSONDecoder()
         return (try? decoder.decode([VehicleInfo].self, from: data)) ?? []
     }
-    
-    func save(vehicle: VehicleInfo) {
-        // First, load the current history.
-        var history = load()
-        
-        // Remove any existing entry with the same ID (VIN) to avoid duplicates.
-        // The new entry will be added to the top.
-        history.removeAll { $0.vin == vehicle.vin }
-        
-        // Add the new vehicle to the beginning of the array.
-        history.insert(vehicle, at: 0)
-        
+    func save(history: [VehicleInfo]) {
         // Keep only the 5 most recent lookups.
         let recentHistory = Array(history.prefix(5))
-        
-        // Encode the updated history array into JSON data and save it back to UserDefaults.
+            
         let encoder = JSONEncoder()
         if let encodedData = try? encoder.encode(recentHistory) {
             UserDefaults.standard.set(encodedData, forKey: historyKey)
         }
+    }
+    
+    func save(vehicle: VehicleInfo) {
+        var history = load()
+        history.removeAll { $0.vin == vehicle.vin }
+        history.insert(vehicle, at: 0)
+        
+        // Call the new general-purpose save function
+        save(history: history)
     }
 }

@@ -49,19 +49,20 @@ struct VINLookupView: View {
                     .autocapitalization(.allCharacters)
                     .disableAutocorrection(true)
                     .focused($isTextFieldFocused)
-                    .onChange(of: viewModel.vinText) {
-                        if viewModel.vinText.count > 17 {
+                    .onChange(of: viewModel.vinText) { _, newValue in
+                        if newValue.count > 17 {
                             viewModel.vinText = String(viewModel.vinText.prefix(17))
                         }
-                }
+                        if newValue.count < 17 {
+                            viewModel.clearResults()
+                        }
+                    }
                 
                 Button(action: {
                     // Access the pasteboard and set the text
-                    if var pastedText = UIPasteboard.general.string {
-                        viewModel.vinText = pastedText
+                    if let pastedText = UIPasteboard.general.string {
                         let sanitizedVIN = pastedText.filter { $0.isLetter || $0.isNumber }.uppercased()
                                 
-                        // 3. Assign the clean VIN to your view model
                         viewModel.vinText = sanitizedVIN
                     }
                 })  {
@@ -87,7 +88,9 @@ struct VINLookupView: View {
 
             Button(action: {
                 isTextFieldFocused = false
-                viewModel.lookupVIN()
+                Task {
+                    await viewModel.lookupVIN()
+                }
             }) {
                 Text("Look Up VIN")
                     .font(.headline.weight(.semibold))
@@ -110,7 +113,15 @@ struct VINLookupView: View {
         } else if let errorMessage = viewModel.errorMessage {
             errorView(message: errorMessage)
         } else if let vehicle = viewModel.vehicle {
-            VehicleDetailCard(vehicle: vehicle)
+            VehicleDetailCard(
+                vehicle: vehicle,
+                isFromHistory: viewModel.isShowingHistoryVehicle,
+                onRefresh: {
+                    Task {
+                        await viewModel.lookupVIN()
+                    }
+                }
+            )
         }
     }
     
@@ -135,8 +146,14 @@ struct VINLookupView: View {
                             .background(Color(UIColor.secondarySystemGroupedBackground))
                             .cornerRadius(12)
                             .onTapGesture {
-                                viewModel.vinText = vehicle.vin
-                                viewModel.vehicle = vehicle
+                                viewModel.showHistoryVehicle(vehicle)
+                            }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    viewModel.deleteHistoryItem(vehicle: vehicle)
+                                } label: {
+                                    Label("Delete", systemImage: "remove")
+                                }
                             }
                         }
                     }
@@ -164,24 +181,36 @@ struct VINLookupView: View {
 
 struct VehicleDetailCard: View {
     let vehicle: VehicleInfo
-    
-    //test
+    let isFromHistory: Bool
+    let onRefresh: () -> Void
+
     @State private var showMoreDetails = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading) {
-                Text("\(vehicle.year) \(vehicle.make) \(vehicle.model)")
-                    .font(.title2.bold())
-                    .foregroundColor(.primary)
-                Text(vehicle.id)
-                    .font(.callout.monospaced())
-                    .foregroundColor(.secondary)
+            HStack(alignment: .top) {
+                VStack(alignment: .leading) {
+                    Text("\(vehicle.year) \(vehicle.make) \(vehicle.model)")
+                        .font(.title2.bold())
+                    Text(vehicle.vin)
+                        .font(.callout.monospaced())
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                if isFromHistory {
+                    Button(action: onRefresh) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.headline)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(.accentColor)
+                }
             }
 
             Divider()
 
-            // Details using a standard VStack for a clean list
             VStack(spacing: 12) {
                 InfoRow(label: "Trim", value: vehicle.trim)
                 InfoRow(label: "Body Type", value: vehicle.bodyType)
@@ -198,6 +227,7 @@ struct VehicleDetailCard: View {
                     InfoRow(label: "Transmission", value: vehicle.transmissionStyle)
                 }
             }
+            
             HStack {
                 Spacer()
                 Button(action: { showMoreDetails.toggle() }) {
@@ -206,7 +236,6 @@ struct VehicleDetailCard: View {
                     Image(systemName: showMoreDetails ? "chevron.up" : "chevron.down").font(.footnote)
                 }
             }
-            
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -217,8 +246,6 @@ struct VehicleDetailCard: View {
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         )
         .animation(.spring, value: showMoreDetails)
-        .transition(.opacity)
-        .animation(.easeIn, value: vehicle.id)
     }
 }
 
