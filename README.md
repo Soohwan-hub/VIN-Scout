@@ -58,9 +58,12 @@ Dependency Injection is used to provide services to the `VINViewModel`, allowing
 
 ## Decisions & Trade-offs
 
-- **`UserDefaults` for History:** `UserDefaults` was chosen for its simplicity and is perfectly suited for storing a small, non-relational list of the last 5 lookups. For a more complex app with a larger history or user accounts, a more robust solution like **SwiftData** or **Core Data** would be preferable.
-- **History UX (Hybrid Model):** The decision was made to instantly show cached data when a history item is tapped, with an optional refresh button. This provides the best trade-off between speed/offline access and the ability to fetch fresh data.
-- **`@MainActor` on ViewModel:** The entire `VINViewModel` class is marked `@MainActor`. This simplifies development by ensuring all properties and methods are accessed on the main thread by default, preventing common UI-related concurrency bugs.
+
+- **UserDefaults for History**: Used UserDefaults for its simplicity, which is ideal for storing a small list of 5 items. A database like SwiftData would have been overkill.
+- **History UX (Hybrid Model)**: Implemented an instant cached display with an optional refresh button to provide the best balance between speed, offline access, and data freshness.
+- **@MainActor on ViewModel**: The entire VINViewModel is marked @MainActor to simplify concurrency and guarantee all UI updates are thread-safe.
+- **Quality-of-Life Features**: Added Paste and Delete functions as key UX improvements to reduce user effort and align with standard iOS patterns.
+- **VIN Scanner Constraint**: The VIN scanner was not implemented due to a hardware constraint. The VisionKit framework for scanning requires a physical device for testing and does not work in the Xcode Simulator.
 
 ## Future Work (With 2 More Days)
 
