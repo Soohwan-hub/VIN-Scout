@@ -14,18 +14,14 @@ final class VINScoutTests: XCTestCase {
     var mockAPIService: MockVINAPIService!
     
     func test_validVIN_shouldPassValidation() {
-        // A known valid VIN for a 2019 Audi A4
-        let validVIN = "WAUUPBFF2K1000000"
+        let validVIN = "1FTFW1E5XPFB12346"
             
-        // XCTAssertNoThrow will pass if the function doesn't throw an error.
         XCTAssertNoThrow(try VINValidator.validate(vin: validVIN), "A valid VIN should not throw an error.")
     }
 
     func test_invalidCheckDigitVIN_shouldThrowError() {
-        // Same VIN as above, but the check digit 'P' (9th char) is changed to 'A'.
-        let invalidVIN = "WAUUPBFF_A_K1000000"
+        let invalidVIN = "12312312312312312"
             
-        // XCTAssertThrowsError will pass if the function throws the specific error we expect.
         XCTAssertThrowsError(try VINValidator.validate(vin: invalidVIN)) { error in
             XCTAssertEqual(error as? VINError, .invalidCheckDigit, "An invalid VIN should throw the invalidCheckDigit error.")
         }
@@ -38,7 +34,6 @@ final class VINScoutTests: XCTestCase {
              "JA32U8FW6AU023413"
          ]
          
-         // We loop through each VIN and assert that it passes validation without throwing an error.
          for vin in realWorldVINs {
              XCTAssertNoThrow(try VINValidator.validate(vin: vin), "VIN \(vin) should be valid but it failed validation.")
          }
@@ -47,8 +42,6 @@ final class VINScoutTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         mockAPIService = MockVINAPIService()
-        // NOTE: This requires your VINViewModel to have an initializer that accepts an apiService
-        // for dependency injection. Example: init(apiService: VINAPIServiceProtocol = VINAPIService())
         viewModel = VINViewModel(apiService: mockAPIService)
     }
 
@@ -75,7 +68,7 @@ final class VINScoutTests: XCTestCase {
             transmissionStyle: nil
         )
         mockAPIService.result = .success(mockVehicle)
-        viewModel.vinText = "123456789ABCDEFGH"
+        viewModel.vinText = "1FTFW1E57KFA14352"
         
         // Act
         await viewModel.lookupVIN()

@@ -223,14 +223,18 @@ struct VehicleDetailCard: View {
                 VStack(spacing: 8) {
                     InfoRow(label: "Fuel Type", value: vehicle.fuelTypePrimary)
                     InfoRow(label: "Cylinders", value: vehicle.engineCylinders)
-                    InfoRow(label: "Displacement", value: vehicle.displacementL.map { "\($0) L" })
+                    InfoRow(label: "Displacement", value: vehicle.displayDisplacement)
                     InfoRow(label: "Transmission", value: vehicle.transmissionStyle)
                 }
             }
             
             HStack {
                 Spacer()
-                Button(action: { showMoreDetails.toggle() }) {
+                Button(action: {
+                    withAnimation(.spring()) {
+                        showMoreDetails.toggle()
+                    }
+                }) {
                     Text(showMoreDetails ? "Show Less" : "Show More")
                         .font(.footnote.weight(.semibold))
                     Image(systemName: showMoreDetails ? "chevron.up" : "chevron.down").font(.footnote)
@@ -245,7 +249,6 @@ struct VehicleDetailCard: View {
              RoundedRectangle(cornerRadius: 15)
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         )
-        .animation(.spring, value: showMoreDetails)
     }
 }
 

@@ -26,3 +26,9 @@ struct VehicleInfo: Codable, Identifiable {
     let displacementL: String?
     let transmissionStyle: String?
 }
+extension VehicleInfo {
+    var displayDisplacement: String? {
+        guard let displacementL, !displacementL.isEmpty else { return nil }
+        return "\(displacementL) L"
+    }
+}

@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "4B452F6E-CC07-4A5B-ABB0-8FD52D48AA62"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VINScout/ViewModels/VINViewModel.swift"
@@ -18,36 +18,6 @@
             endingLineNumber = "63"
             landmarkName = "lookupVIN()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "4B452F6E-CC07-4A5B-ABB0-8FD52D48AA62 - c9c4d2bd7d88ee0c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in VINScout.VINViewModel.lookupVIN() -&gt; ()"
-                  moduleName = "VINScout.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user283826/Documents/VIN-Scout/VINScout/VINScout/ViewModels/VINViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "37"
-                  endingLineNumber = "37">
-               </Location>
-               <Location
-                  uuid = "4B452F6E-CC07-4A5B-ABB0-8FD52D48AA62 - 6dc27b9e50fb9c0d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for closure #1 () async -&gt; () in VINScout.VINViewModel.lookupVIN() -&gt; ()"
-                  moduleName = "VINScout.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/user283826/Documents/VIN-Scout/VINScout/VINScout/ViewModels/VINViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "37"
-                  endingLineNumber = "37">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
